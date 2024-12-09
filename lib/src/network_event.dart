@@ -4,13 +4,13 @@ class NetworkEvent {
   NetworkEvent.now({this.request, this.response, this.error})
       : this.timestamp = DateTime.now();
 
-  Request? request;
-  Response? response;
+  RequestCustom? request;
+  ResponseCustom? response;
   NetworkError? error;
   DateTime? timestamp;
 }
 
-/// Used for storing [Request] and [Response] headers.
+/// Used for storing [RequestCustom] and [ResponseCustom] headers.
 class Headers {
   Headers(Iterable<MapEntry<String, String>> entries)
       : this.entries = entries.toList();
@@ -27,8 +27,8 @@ class Headers {
 }
 
 /// Http request details.
-class Request {
-  Request({
+class RequestCustom {
+  RequestCustom({
     required this.uri,
     required this.method,
     required this.headers,
@@ -42,8 +42,8 @@ class Request {
 }
 
 /// Http response details.
-class Response {
-  Response({
+class ResponseCustom {
+  ResponseCustom({
     required this.headers,
     required this.statusCode,
     required this.statusMessage,

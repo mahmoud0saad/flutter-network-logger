@@ -59,7 +59,7 @@ class DioNetworkLogger extends dio.Interceptor {
 }
 
 extension _RequestOptionsX on dio.RequestOptions {
-  Request toRequest() => Request(
+  RequestCustom toRequest() => RequestCustom(
         uri: uri.toString(),
         data: data,
         method: method,
@@ -70,7 +70,7 @@ extension _RequestOptionsX on dio.RequestOptions {
 }
 
 extension _ResponseX on dio.Response {
-  Response toResponse() => Response(
+  ResponseCustom toResponse() => ResponseCustom(
         data: data,
         statusCode: statusCode ?? -1,
         statusMessage: statusMessage ?? 'unkown',
