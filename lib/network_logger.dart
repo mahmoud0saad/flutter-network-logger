@@ -5,3 +5,4 @@ export 'src/ui.dart'
     show NetworkLoggerScreen, NetworkLoggerButton, NetworkLoggerOverlay;
 
 export 'src/channels/dio.dart';
+export 'src/channels/http_logger.dart';
