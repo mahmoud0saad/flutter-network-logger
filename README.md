@@ -16,12 +16,17 @@ Check [this guide](https://pub.dev/packages/network_logger/install) to install *
 
 ### 2. Add `DioNetworkLogger` interceptor to dio client.
 
-**network_logger** comes with [Dio](https://pub.dev/packages/dio) interceptor which will intercept traffic from Dio client. Other package implementations coming soon.
+**network_logger** provides powerful network traffic logging for Flutter and Dart applications. It supports popular [http](https://pub.dev/packages/http) clients like [Dio](https://pub.dev/packages/dio) and http, making it easy to debug and monitor network requests and responses in your app.
+**Dio**
 
 ```dart
 var dio = Dio();
 dio.interceptors.add(DioNetworkLogger());
 ```
+**Http**
+
+Client  client =InterceptedClient.build(interceptors: [HttpNetworkLogger()]);
+
 
 ### 3. Attach network logger overlay button to UI.
 
