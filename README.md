@@ -23,10 +23,12 @@ Check [this guide](https://pub.dev/packages/network_logger/install) to install *
 var dio = Dio();
 dio.interceptors.add(DioNetworkLogger());
 ```
+
 **Http**
 
+```dart
 Client  client =InterceptedClient.build(interceptors: [HttpNetworkLogger()]);
-
+```
 
 ### 3. Attach network logger overlay button to UI.
 
