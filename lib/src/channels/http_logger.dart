@@ -43,11 +43,18 @@ class HttpNetworkLogger extends InterceptorContract {
     if (response is Response) {
       log((response).body);
     }
-    // final event = _requests.remove(response.requestOptions);
-    // if (event != null) {
-    //   eventList.updated(event..response = response.toResponse());
-    // } else {
-    // }
+
+    final event = response.request!=null?_requests.remove(convertHttpRequestToDioOptions(response.request!)):null;
+    if (event != null) {
+      eventList.updated(event..response =  ResponseCustom(
+        data:  (response is Response)?response.body:"",
+        statusCode: response.statusCode,
+        statusMessage: response.reasonPhrase ?? 'unkown',
+        headers: Headers(response.request?.headers?.entries?.map(
+              (kv) => MapEntry(kv.key, '${kv.value}'),
+        )??{},
+      )));
+    } else {
     eventList.add(NetworkEvent.now(
       request: RequestCustom(
         uri: response.request?.url.toString()??"",
@@ -61,12 +68,13 @@ class HttpNetworkLogger extends InterceptorContract {
       response: ResponseCustom(
           data: (response is Response)?response.body:"",
           statusCode: response.statusCode  ,
-          statusMessage:  'unkown',
+          statusMessage: response.reasonPhrase ??  'unkown',
           headers:Headers(response.request?.headers?.entries?.map(
                 (kv) => MapEntry(kv.key, '${kv.value}'),
           )??{},)
       ),
     ));
+    }
 
     return response;
   }
@@ -106,28 +114,5 @@ class HttpNetworkLogger extends InterceptorContract {
 
 }
 
-extension _RequestOptionsX on dio.RequestOptions {
-  RequestCustom toRequest() => RequestCustom(
-        uri: uri.toString(),
-        data: data,
-        method: method,
-        headers: Headers(headers.entries.map(
-          (kv) => MapEntry(kv.key, '${kv.value}'),
-        )),
-      );
-}
 
-extension _ResponseX on dio.Response {
-  ResponseCustom toResponse() => ResponseCustom(
-        data: data,
-        statusCode: statusCode ?? -1,
-        statusMessage: statusMessage ?? 'unkown',
-        headers: Headers(
-          headers.map.entries.fold<List<MapEntry<String, String>>>(
-            [],
-            (p, e) => p..addAll(e.value.map((v) => MapEntry(e.key, v))),
-          ),
-        ),
-      );
-}
 
