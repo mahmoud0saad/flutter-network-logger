@@ -24,7 +24,7 @@ class HttpNetworkLogger extends InterceptorContract {
     eventList.add(_requests[request] = NetworkEvent.now(
         request:  RequestCustom(
           uri: request.url.toString(),
-          data: request.headers,
+          data: (request is Request)?request.body: request.headers,
           method: request.method,
           headers: Headers(request.headers.entries.map(
                 (kv) => MapEntry(kv.key, '${kv.value}'),
