@@ -412,38 +412,81 @@ class NetworkLoggerEventScreen extends StatelessWidget {
   /// Which event to display details for.
   final NetworkEvent event;
 
-  Widget buildBodyViewer(BuildContext context, dynamic body) {
-    String text;
-    if (body == null) {
-      text = '';
-    } else if (body is String) {
-      text = body;
-    } else if (body is List || body is Map) {
-      text = _jsonEncoder.convert(body);
-    } else {
-      text = body.toString();
+Widget buildBodyViewer(BuildContext context, dynamic body) {
+  String text;
+
+  if (body == null) {
+    text = '';
+  } else if (body is String) {
+    // نحاول نفك JSON وننسيقه لو كان string يحتوي على JSON
+    try {
+      final decoded = jsonDecode(body);
+      text = const JsonEncoder.withIndent('  ').convert(decoded);
+    } catch (_) {
+      text = body; // مش JSON، نعرضه عادي
     }
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: GestureDetector(
-        onLongPress: () {
-          Clipboard.setData(ClipboardData(text: text));
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  } else if (body is List || body is Map) {
+    text = const JsonEncoder.withIndent('  ').convert(body);
+  } else {
+    text = body.toString();
+  }
+
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    padding: const EdgeInsets.symmetric(horizontal: 15),
+    child: GestureDetector(
+      onLongPress: () {
+        Clipboard.setData(ClipboardData(text: text));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
             content: Text('Copied to clipboard'),
             behavior: SnackBarBehavior.floating,
-          ));
-        },
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontFamily: 'monospace',
-            fontFamilyFallback: ['sans-serif'],
           ),
+        );
+      },
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontFamily: 'monospace',
+          fontFamilyFallback: ['sans-serif'],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+  // Widget buildBodyViewer(BuildContext context, dynamic body) {
+  //   String text;
+  //   if (body == null) {
+  //     text = '';
+  //   } else if (body is String) {
+  //     text = body;
+  //   } else if (body is List || body is Map) {
+  //     text = _jsonEncoder.withIndent(body);
+  //   } else {
+  //     text = body.toString();
+  //   }
+  //   return SingleChildScrollView(
+  //     scrollDirection: Axis.horizontal,
+  //     padding: const EdgeInsets.symmetric(horizontal: 15),
+  //     child: GestureDetector(
+  //       onLongPress: () {
+  //         Clipboard.setData(ClipboardData(text: text));
+  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //           content: Text('Copied to clipboard'),
+  //           behavior: SnackBarBehavior.floating,
+  //         ));
+  //       },
+  //       child: Text(
+  //         text,
+  //         style: const TextStyle(
+  //           fontFamily: 'monospace',
+  //           fontFamilyFallback: ['sans-serif'],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget buildHeadersViewer(
     BuildContext context,
